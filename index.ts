@@ -1,25 +1,20 @@
+import { ProductType } from "./types/ProductType";
 var express = require("express");
 var puppeteer = require("puppeteer");
 var app = express();
 
-interface ProductType {
-  name: string | null;
-  price: string | null;
-  link: string | null;
-}
-
 app.get("/vatan/:productName", async (req: Request, res: Response) => {
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
-  let nowPage: number = 1;
+  let currentPage: number = 1;
   let list: string[] = [];
-  let url: URL = new URL(
+  let baseUrl: URL = new URL(
     "https://www.vatanbilgisayar.com/cep-telefonu-modelleri/"
   );
 
   const goNextPage = async (pageNumber: number) => {
     try {
-      await page.goto(`${url}?page=${pageNumber}`);
+      await page.goto(`${baseUrl}?page=${pageNumber}`);
       await page.setViewport({ width: 1000, height: 700 });
       getProductVatan();
     } catch (e) {
@@ -35,8 +30,8 @@ app.get("/vatan/:productName", async (req: Request, res: Response) => {
 
       await page.locator(".search__input").fill(name);
       await page.click(".search__button");
-      url = await page.url();
-      goNextPage(1);
+      baseUrl = await page.url();
+      goNextPage(currentPage);
     } catch (e) {
       console.log("Search Yaparken Bir sorunla karşılaşıldı");
     }
@@ -45,22 +40,21 @@ app.get("/vatan/:productName", async (req: Request, res: Response) => {
   const getProductVatan = async () => {
     console.log("Scrapper is working");
     try {
-      const scrapProducts = await page.evaluate(() => {
+      const scrapProducts = await page.evaluate((): ProductType[] => {
         const productBox = document.querySelectorAll(
           ".product-list--list-page .product-list__product-name h3"
         );
-        const ProductImageBox = document.querySelectorAll(
-          ".product-list__image-safe a"
-        );
-        const ProductPriceBox = document.querySelectorAll(
+        const productImageBox = document.querySelectorAll(".product-list-link");
+        const productPriceBox = document.querySelectorAll(
           ".product-list__price"
         );
         let products: ProductType[] = [];
         productBox.forEach((product, index) => {
           products.push({
-            name: product?.innerHTML || null,
-            price: ProductPriceBox[index]?.innerHTML + " TL" || null,
-            link: `${ProductImageBox[index]}` || null,
+            productName: product?.innerHTML.trim() || null,
+            productPrice:
+              Number(productPriceBox[index]?.innerHTML.trim()) || null,
+            productLink: `${productImageBox[index]}` || null,
           });
         });
         return products;
@@ -69,16 +63,16 @@ app.get("/vatan/:productName", async (req: Request, res: Response) => {
         scrapProducts.forEach((product: string) => {
           list.push(product);
         });
-        nowPage += 1;
-        goNextPage(nowPage);
-        // console.log(nowPage);
+        currentPage += 1;
+        goNextPage(currentPage);
+        // console.log(currentPage);
       } else {
         if (list.length > 0) {
           console.log(list.length);
-          res.json({ products: list });
+          res.json({ SearchProductOutput: list });
           console.log("Scrapper is Finished");
         } else {
-          res.json({ ok: "Not Found" });
+          res.json({ status: "Not Found" });
           console.log("Scrapper is Finished");
         }
         await browser.close();
