@@ -6,33 +6,27 @@ VatanScrapper, Vatan Bilgisayar web sitesinden ürün bilgilerini otomatik olara
 <h2>Özellikler</h2>
 Ürün Bilgisi Toplama: Belirli kategorilerdeki ürünlerin ad, fiyat ve diğer bilgilerini toplar.
 Veri Çıktısı: Toplanan verileri JSON formatında saklar.
-Kurulum
+## Kurulum
 Bu projeyi yerel makinenizde çalıştırmak için aşağıdaki adımları izleyin:
 
 <h2>Gereksinimler</h2>
 Node.js (v12.0.0 veya üstü)
 npm (Node Package Manager)
-Adımlar
-Depoyu klonlayın:
+<h2>Adımlar</h2>
+1. Depoyu klonlayın:</br>
+<code> git clone https://github.com/brtsyf/VatanScrapper.git</code></br>
+<code>cd VatanScrapper</code></br>
+Gerekli paketleri yükleyin:</br>
+<code>npm install</code></br>
+Projeyi çalıştırın:</br>
+<code>npm run start</code></br>
+Nodemon ile output aldıgımız js dosyasını çalıştırın:</br>
+<code>npx nodemon dir/index.js</code>
 
-bash
-Kodu kopyala
-git clone https://github.com/brtsyf/VatanScrapper.git
-cd VatanScrapper
-Gerekli paketleri yükleyin:
-
-bash
-Kodu kopyala
-npm install
-Projeyi çalıştırın:
-
-bash
-Kodu kopyala
-npm start
-Kullanım
+## Kullanım
 Scraper'ı başlattığınızda, uygulamayı başlattığınız port üzerinden http://localhost:8080/VatanScrapper/productName aradığınız ürünleri çekebilirsiniz.
 
-Katkıda Bulunma
+## Katkıda Bulunma
 Katkıda bulunmak isterseniz lütfen önce bir konu açın ve yapmayı planladığınız değişiklikleri tartışın. Kabul edilen değişiklikler için lütfen aşağıdaki adımları izleyin:
 
 
